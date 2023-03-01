@@ -1,0 +1,8 @@
+com\fciencias\evolutivo\evalFunctions\RosenbrockFunction.class
+com\fciencias\evolutivo\evalFunctions\RastriginFunction.class
+com\fciencias\evolutivo\evalFunctions\GriewankFunction.class
+com\fciencias\evolutivo\evalFunctions\ThenthPowerFunction.class
+com\fciencias\evolutivo\evalFunctions\AckleyFunction.class
+com\fciencias\evolutivo\evalFunctions\EvalUtils.class
+com\fciencias\evolutivo\evalFunctions\EvalFunction.class
+com\fciencias\evolutivo\evalFunctions\SphereFunction.class

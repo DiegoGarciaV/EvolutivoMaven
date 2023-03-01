@@ -1,0 +1,35 @@
+Results for Sphere Function using dimension 3 and 10000 iterations 
+Execution time: 0.217s 
+Best value: 0.40656965750815643
+Avg value: 27.010547800675546
+Worst value: 71.92554422112681
+
+Results for Ackley Function using dimension 3 and 10000 iterations 
+Execution time: 0.205s 
+Best value: 6.446790359786815
+Avg value: 20.601512816759787
+Worst value: 22.218233240960256
+
+Results for Griewank Function using dimension 3 and 10000 iterations 
+Execution time: 0.083s 
+Best value: 1.5316818392428169
+Avg value: 91.17333325124383
+Worst value: 253.26397640050138
+
+Results for Thenth Power Function using dimension 3 and 10000 iterations 
+Execution time: 0.085s 
+Best value: 8.353344401101235E-5
+Avg value: 3093724.7773566428
+Worst value: 2.4328774618404705E7
+
+Results for Rastrigin Function using dimension 3 and 10000 iterations 
+Execution time: 0.066s 
+Best value: 6.190955441588031
+Avg value: 55.751393478104255
+Worst value: 106.42872096452908
+
+Results for Rosenbrock Function using dimension 3 and 10000 iterations 
+Execution time: 0.04s 
+Best value: 1.9707299561609002
+Avg value: 1108.9808520638185
+Worst value: 7326.270326185057

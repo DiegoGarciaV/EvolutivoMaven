@@ -1,0 +1,1 @@
+Function: Rosenbrock Function, Thread: 7,Iteration: 1068,Vector: (1.139064600762791 1.3735111703148286 1.775464193720079 ),Value: 1.9707299561609002

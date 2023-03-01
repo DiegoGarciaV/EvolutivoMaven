@@ -1,0 +1,4 @@
+Este es un archivo de prueba
+Contiene varias lineas de texto
+El archivo debera poder leer linea por linea
+Pero no se probaran caracteres especiales del espaniol

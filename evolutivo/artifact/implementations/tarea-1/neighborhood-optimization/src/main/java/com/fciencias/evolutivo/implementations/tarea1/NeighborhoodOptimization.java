@@ -1,7 +1,4 @@
 package com.fciencias.evolutivo.implementations.tarea1;
-
-import java.security.InvalidParameterException;
-
 import com.fciencias.evolutivo.evalFunctions.EvalFunction;
 import com.fciencias.evolutivo.libraries.ParamsValidator;
 

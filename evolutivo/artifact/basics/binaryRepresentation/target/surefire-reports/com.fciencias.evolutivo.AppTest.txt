@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.fciencias.evolutivo.AppTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s - in com.fciencias.evolutivo.AppTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.061 s - in com.fciencias.evolutivo.AppTest

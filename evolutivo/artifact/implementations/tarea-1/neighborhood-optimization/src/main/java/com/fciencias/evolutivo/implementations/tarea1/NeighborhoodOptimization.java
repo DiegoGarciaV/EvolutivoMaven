@@ -25,8 +25,6 @@ public class NeighborhoodOptimization
 
     public static void main( String[] args )
     {
-        
-
         ParamsValidator.validate(args);
         int dimension = ParamsValidator.getDimension();
         int representationalBits = ParamsValidator.getRepresentationalBits();

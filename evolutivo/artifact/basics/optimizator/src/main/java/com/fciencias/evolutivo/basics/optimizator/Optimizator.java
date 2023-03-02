@@ -7,5 +7,7 @@ public interface Optimizator {
     public BinaryRepresentation optimize();
 
     public BinaryRepresentation getNewstate(); 
+
+    public BinaryRepresentation compareStates(BinaryRepresentation state1, BinaryRepresentation state2);
     
 }

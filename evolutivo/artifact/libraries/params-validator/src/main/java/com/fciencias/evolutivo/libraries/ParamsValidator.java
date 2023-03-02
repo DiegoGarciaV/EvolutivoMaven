@@ -35,14 +35,17 @@ public class ParamsValidator
             if(params[i].equals("-d"))
             {
                 dimension = Integer.parseInt(params[i+1]);
+                i++;
             }
             else if(params[i].equals("-b"))
             {
                 representationalBits = Integer.parseInt(params[i+1]);
+                i++;
             }
             else if(params[i].equals("-i"))
             {
                 iterations = Integer.parseInt(params[i+1]);
+                i++;
             }
             else
             {

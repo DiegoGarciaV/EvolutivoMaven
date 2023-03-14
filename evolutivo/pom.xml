@@ -25,7 +25,7 @@
         
     <java.version>17</java.version>
     		
-    <outputDirectoryJars>executables</outputDirectoryJars>
+    <outputDirectoryJars>executables/</outputDirectoryJars>
       
   </properties>
     	

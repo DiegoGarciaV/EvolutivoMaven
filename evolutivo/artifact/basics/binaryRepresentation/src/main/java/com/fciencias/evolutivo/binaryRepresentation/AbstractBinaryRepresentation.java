@@ -2,20 +2,32 @@ package com.fciencias.evolutivo.binaryRepresentation;
 
 import java.security.InvalidParameterException;
 
+import com.fciencias.evolutivo.basics.NormalRandomDistribution;
+import com.fciencias.evolutivo.basics.RandomDistribution;
+
 public abstract class AbstractBinaryRepresentation implements BinaryRepresentation {
 
     protected double[] realValue;
     protected int representationalBits;
     protected String binaryString;
     protected boolean[][] binaryArray;
+    RandomDistribution randomDistribution;
+
 
     protected AbstractBinaryRepresentation(){
         representationalBits = 8;
+        this.randomDistribution = new NormalRandomDistribution();
+    }
+
+    protected AbstractBinaryRepresentation(RandomDistribution randomDistribution){
+        representationalBits = 8;
+        this.randomDistribution = randomDistribution;
     }
     
     protected AbstractBinaryRepresentation(String binaryString)
     {
         this.binaryString = binaryString;
+        randomDistribution = new NormalRandomDistribution();
 
     }
 
@@ -35,6 +47,10 @@ public abstract class AbstractBinaryRepresentation implements BinaryRepresentati
         return binaryArray;
     }
 
+    public RandomDistribution getRandomDistribution() {
+        return randomDistribution;
+    }
+
     protected boolean[] stringToArray(String stringValue) throws InvalidParameterException
     {
         int i = stringValue.length() - 1;
@@ -50,13 +66,26 @@ public abstract class AbstractBinaryRepresentation implements BinaryRepresentati
         return booleanArray;
     }
     
-    protected String arrayToString(boolean[] booleanString)
+    protected int arrayToInteger(boolean[] booleanArray)
+    {
+        int totalSum = 0;
+        int i = booleanArray.length - 1;
+
+        for(boolean bit : booleanArray)
+        
+            totalSum += (bit ? Math.pow(2,i--) : 0);
+
+        return totalSum;
+        
+    }
+
+    protected String arrayToString(boolean[] booleanArray)
     {
         StringBuilder stringRep = new StringBuilder();
     
-        for(boolean bit : booleanString)
+        for(int i = booleanArray.length - 1; i >= 0; i --)
         
-            stringRep.append(bit ? "1" : "0");
+            stringRep.append(booleanArray[i] ? "1" : "0");
 
         return stringRep.toString();
         
@@ -87,5 +116,14 @@ public abstract class AbstractBinaryRepresentation implements BinaryRepresentati
             
     }
 
+    @Override
+    public String printRealValue()
+    {
+        StringBuilder stringRealValue = new StringBuilder("(");
+        for(double xi : realValue)
+            stringRealValue.append(xi).append(" ");
+        stringRealValue.append(")");
+        return stringRealValue.toString();
+    }
     
 }

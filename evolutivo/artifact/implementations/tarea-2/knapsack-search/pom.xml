@@ -30,8 +30,32 @@
     </dependency>
 
     <dependency>
+      <groupId>com.fciencias.evolutivo</groupId>
+      <artifactId>evalFunctions</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fciencias.evolutivo</groupId>
+      <artifactId>binaryRepresentation</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+  
+    <dependency>
+        <groupId>com.fciencias.evolutivo.basics</groupId>
+        <artifactId>optimizator</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.fciencias.evolutivo.libraries</groupId>
       <artifactId>files-manager</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fciencias.evolutivo.libraries</groupId>
+      <artifactId>params-validator</artifactId>
       <version>1.0.0</version>
     </dependency>
     

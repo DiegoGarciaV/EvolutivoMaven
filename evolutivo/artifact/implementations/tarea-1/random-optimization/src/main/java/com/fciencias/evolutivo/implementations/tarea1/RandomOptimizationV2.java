@@ -1,4 +1,5 @@
 package com.fciencias.evolutivo.implementations.tarea1;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,27 +10,11 @@ import com.fciencias.evolutivo.evalFunctions.EvalFunction;
 import com.fciencias.evolutivo.evalFunctions.SphereFunction;
 import com.fciencias.evolutivo.libraries.ParamsValidator;
 
-public class NeighborhoodOptimization extends AbstractOptimizator
-{
+public class RandomOptimizationV2 extends AbstractOptimizator{
 
-    public NeighborhoodOptimization(EvalFunction evalFunction, double[] interval, long iterations, int representationalBits, int dimension, Map<String,Object> globalParams, int hilo) {
+    public RandomOptimizationV2(EvalFunction evalFunction, double[] interval, long iterations, int representationalBits, int dimension, Map<String,Object> globalParams, int hilo) {
         
         super(evalFunction, interval, iterations, representationalBits, dimension, globalParams,hilo);
-    }
-
-
-    @Override
-    public BinaryRepresentation[] getNewStates() {
-        
-        return globalBinaryRepresentationState.getNeighborhoods(0.1, 2);
-    }
-
-    @Override
-    public boolean compareStates(BinaryRepresentation state1, BinaryRepresentation state2) {
-        
-        double valuation1 = evalFunction.evalSoution(state1.getRealValue());
-        double valuation2 = evalFunction.evalSoution(state2.getRealValue());
-        return ( (optimizeDirection && (valuation1 > valuation2)) || (!optimizeDirection && (valuation1 < valuation2)) );
     }
 
     @Override
@@ -39,18 +24,40 @@ public class NeighborhoodOptimization extends AbstractOptimizator
         bestValue = evalFunction.evalSoution(globalBinaryRepresentationState.getRealValue());
     }
 
-    
+    @Override
+    public BinaryRepresentation[] getNewStates() {
+        
+        double[] origin = new double[globalBinaryRepresentationState.getRealValue().length];
+        for(int i = 0; i < origin.length; i++)
+            origin[i] = 0;
+        
+        int newstatescount = 1;
+        BinaryRepresentation[] newStates = new BinaryRepresentation[newstatescount];
+        for(int i = 0; i < newstatescount; i++)
+        {
+            newStates[i] = globalBinaryRepresentationState.getRandomState(interval[1] - interval[0], origin);
+        }
+        return newStates;
+        
+    }
+
+    @Override
+    public boolean compareStates(BinaryRepresentation state1, BinaryRepresentation state2) {
+
+        double valuation1 = evalFunction.evalSoution(state1.getRealValue());
+        double valuation2 = evalFunction.evalSoution(state2.getRealValue());
+        return ( (optimizeDirection && (valuation1 > valuation2)) || (!optimizeDirection && (valuation1 < valuation2)) );
+    }
 
     @Override
     public AbstractOptimizator createOptimizator(int hilo, boolean logTrack) {
-        
-        NeighborhoodOptimization neighborhoodOptimization = new NeighborhoodOptimization(evalFunction, interval, iterations, representationalBits, dimension, globalParams, hilo);
-        neighborhoodOptimization.setLogTrack(logTrack);
-        neighborhoodOptimization.globalParams.replace(MINIMUN_VALUE,bestValue);
-        return neighborhoodOptimization;
-    }
- 
 
+        RandomOptimizationV2 randomOptimization = new RandomOptimizationV2(evalFunction, interval, iterations, representationalBits, dimension, globalParams, hilo);
+        randomOptimization.setLogTrack(logTrack);
+        randomOptimization.globalParams.replace(MINIMUN_VALUE,bestValue);
+        return randomOptimization;
+    }
+    
     public static void main( String[] args )
     {
         ParamsValidator.validate(args);
@@ -66,8 +73,10 @@ public class NeighborhoodOptimization extends AbstractOptimizator
         Map<String,Object> globalParams = new HashMap<>();
         EvalFunction evalFunction = new SphereFunction();
         double[] interval = new double[]{-5.12,5.12};
-        NeighborhoodOptimization neighborhoodOptimization = new NeighborhoodOptimization(evalFunction, interval, iterations, representationalBits, dimension,globalParams,0);
-        long deltaTime = neighborhoodOptimization.startMultiThreadOptimization(false,false);
+        
+        RandomOptimizationV2 randomOptimizationV2 = new RandomOptimizationV2(evalFunction, interval, iterations, representationalBits, dimension,globalParams,0);
+        randomOptimizationV2.setLogTrack(true);
+        long deltaTime = randomOptimizationV2.startMultiThreadOptimization(false,true);
 
         StringBuilder endMessage = new StringBuilder("Results for " + evalFunction.getFunctionName() + " using dimension " + dimension + " and " + iterations+ " iterations \n")
         .append("Execution time: " + deltaTime/1000.0 + "s \n")
@@ -78,8 +87,4 @@ public class NeighborhoodOptimization extends AbstractOptimizator
         System.out.println(endMessage.toString());
 
     }
-
-
-   
-     
 }

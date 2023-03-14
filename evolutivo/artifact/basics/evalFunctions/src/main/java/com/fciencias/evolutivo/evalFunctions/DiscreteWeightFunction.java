@@ -4,7 +4,11 @@ public class DiscreteWeightFunction extends EvalUtils{
 
     private double[] weights;
 
-    
+    public DiscreteWeightFunction(double[] weights)
+    {
+        this.weights = weights;
+    }
+
     @Override
     public double evalSoution(double[] param) {
         

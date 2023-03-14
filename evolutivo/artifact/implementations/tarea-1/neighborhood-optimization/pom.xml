@@ -33,6 +33,13 @@
       <artifactId>evalFunctions</artifactId>
       <version>1.0.0</version>
     </dependency>
+
+    <dependency>
+        <groupId>com.fciencias.evolutivo.basics</groupId>
+        <artifactId>optimizator</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+
     <dependency>
       <groupId>com.fciencias.evolutivo</groupId>
       <artifactId>binaryRepresentation</artifactId>

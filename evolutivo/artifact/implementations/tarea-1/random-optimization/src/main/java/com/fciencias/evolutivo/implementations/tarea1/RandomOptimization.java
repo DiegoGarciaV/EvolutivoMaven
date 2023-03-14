@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import com.fciencias.evolutivo.basics.NormalRandomDistribution;
+import com.fciencias.evolutivo.basics.RandomDistribution;
 import com.fciencias.evolutivo.binaryRepresentation.BinaryMappingState;
 import com.fciencias.evolutivo.evalFunctions.*;
 import com.fciencias.evolutivo.libraries.FileManager;
@@ -145,9 +147,9 @@ public class RandomOptimization implements Runnable
         return randVector;
     }
 
-    public BinaryMappingState getRandomState(double[] interval, int dimension, int bits,int randomize)
+    public BinaryMappingState getRandomState(double[] interval, int dimension, int bits,int randomize, RandomDistribution randomDistribution)
     {
-        return new BinaryMappingState(getRandomVector(interval, dimension,randomize),bits, interval);
+        return new BinaryMappingState(getRandomVector(interval, dimension,randomize),bits, interval,randomDistribution);
     }
 
     public BinaryMappingState optimize()
@@ -155,7 +157,7 @@ public class RandomOptimization implements Runnable
         for(int i = 0; i < iterations; i ++)
         {
             
-            BinaryMappingState binaryMappingState = getRandomState(interval,dimension,representationalBits,hilo);
+            BinaryMappingState binaryMappingState = getRandomState(interval,dimension,representationalBits,hilo,globalBinaryMappingState.getRandomDistribution());
             double currentStateValue = evalFunction.evalSoution(binaryMappingState.getRealValue()); 
             StringBuilder vector = new StringBuilder("(");
             for(double xi : binaryMappingState.getRealValue())
@@ -180,7 +182,7 @@ public class RandomOptimization implements Runnable
                 FileManager fileManager = new FileManager();
                 String fileName = OUTPUT_FILE_NAME;
                 long fileIndex = fileManager.openFile(fileName,true);
-                fileManager.writeFile(fileIndex,"Function: "+ evalFunction.getFunctionName() + ", Thread: "+ hilo + ",Iteration: " + i + ",Vector: " + vector  + ",Value: " + minValue + "\n",false);
+                fileManager.writeFile(fileIndex,"Function: "+ evalFunction.getFunctionName() + ", Thread: "+ hilo + ",Iteration: " + i + ",Vector: " + vector  + ",Value: " + minValue + "\n",true);
             }
             else if(currentStateValue > maxValue)
             {
@@ -207,7 +209,7 @@ public class RandomOptimization implements Runnable
         fileManager.writeFile(fileIndex,(appendFile ? "\n" : "") + "Tracking for " + evalFunction.getFunctionName() + "\n",appendFile);
 
         RandomOptimization optimumRandomOptimization = new RandomOptimization(evalFunction, interval, iterations, representationalBits,dimension);
-        BinaryMappingState optimuBinaryMappingState = optimumRandomOptimization.getRandomState(interval, dimension, representationalBits,0);
+        BinaryMappingState optimuBinaryMappingState = optimumRandomOptimization.getRandomState(interval, dimension, representationalBits,0,new NormalRandomDistribution());
         optimumRandomOptimization.setGlobalBinaryMappingState(optimuBinaryMappingState);
 
         

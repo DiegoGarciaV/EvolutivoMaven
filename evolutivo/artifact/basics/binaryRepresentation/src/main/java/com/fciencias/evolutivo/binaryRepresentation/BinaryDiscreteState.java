@@ -1,7 +1,7 @@
 package com.fciencias.evolutivo.binaryRepresentation;
 
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import java.util.List;
 
 public class BinaryDiscreteState extends AbstractBinaryRepresentation{
@@ -13,6 +13,7 @@ public class BinaryDiscreteState extends AbstractBinaryRepresentation{
         this.representationalBits = representationalBits;
         this.binaryArray = new boolean[1][this.representationalBits];
         this.binaryString = arrayToString(this.binaryArray[0]);
+        this.realValue = arrayToRealVector(binaryArray[0]);
     }
 
     public BinaryDiscreteState(int[] elementos)
@@ -21,6 +22,7 @@ public class BinaryDiscreteState extends AbstractBinaryRepresentation{
         this.representationalBits = elementos.length;
         encodeToBinary();
         this.binaryString = arrayToString(this.binaryArray[0]);
+        this.realValue = arrayToRealVector(this.binaryArray[0]);
     }
     
     public BinaryDiscreteState(String binaryStrig)
@@ -39,15 +41,25 @@ public class BinaryDiscreteState extends AbstractBinaryRepresentation{
         elementos = new int[idElementos.size()];
         for(int i = 0; i < elementos.length; i++)
             elementos[i] = idElementos.get(i);
+
+        this.realValue = arrayToRealVector(binaryArray[0]);
     }
 
-    @Override
     public void encodeToBinary() {
         
         binaryArray = new boolean[1][representationalBits];
         for(int elemento : elementos)
             binaryArray[0][elemento] = true;
         
+    }
+
+    private double[] arrayToRealVector(boolean[] binaryarray)
+    {
+        double[] realVector = new double[representationalBits];
+        for(int i = 0; i < representationalBits; i++)
+            realVector[i] = (binaryarray[i] ? 1.0 : 0.0);
+
+        return realVector;
     }
 
     @Override
@@ -60,6 +72,32 @@ public class BinaryDiscreteState extends AbstractBinaryRepresentation{
         }
         stringState.append("]");
         return stringState.toString();
+    }
+
+    @Override
+    public BinaryRepresentation[] getNeighborhoods(double radius, int n) {
+        
+        int totalNeighborhoods = Math.min(n, representationalBits);
+        BinaryRepresentation[] neighborhoods = new BinaryDiscreteState[totalNeighborhoods];
+        
+        boolean[] newBinaryArray = Arrays.copyOf(binaryArray[0], binaryArray[0].length);
+
+        for(int i = 0; i < totalNeighborhoods; i ++)
+        {
+            if(i > 0)
+                newBinaryArray[i-1] = !newBinaryArray[i-1];   
+
+            newBinaryArray[i] = !binaryArray[0][i];
+            neighborhoods[i] = new BinaryDiscreteState(arrayToString(newBinaryArray));
+            
+        }
+        return neighborhoods;
+    }
+
+    @Override
+    public BinaryRepresentation getRandomState(double radius, double[] mu) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getRandomState'");
     }
     
 }

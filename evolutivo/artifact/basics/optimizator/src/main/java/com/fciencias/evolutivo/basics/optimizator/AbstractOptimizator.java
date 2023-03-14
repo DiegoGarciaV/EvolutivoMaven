@@ -1,9 +1,13 @@
 package com.fciencias.evolutivo.basics.optimizator;
 
+import java.util.Date;
 import java.util.Map;
 
+import com.fciencias.evolutivo.basics.RandomDistribution;
 import com.fciencias.evolutivo.binaryRepresentation.BinaryRepresentation;
 import com.fciencias.evolutivo.evalFunctions.EvalFunction;
+import com.fciencias.evolutivo.evalFunctions.SphereFunction;
+import com.fciencias.evolutivo.libraries.FileManager;
 
 /**
  * Hello world!
@@ -16,8 +20,16 @@ public abstract class AbstractOptimizator implements Optimizator, Runnable
     protected long iterations;
     protected int representationalBits;
     protected int dimension;
+    protected boolean optimizeDirection = false;
+    protected double minimumValue;
+    protected double maximumValue;
+    protected double bestValue;
+    protected boolean logTrack;
+    protected RandomDistribution randomDistribution;
+    
 
-    protected BinaryRepresentation globalBinaryMappingState;
+
+    protected BinaryRepresentation globalBinaryRepresentationState;
 
     protected Map<String,Object> globalParams;
 
@@ -33,19 +45,37 @@ public abstract class AbstractOptimizator implements Optimizator, Runnable
 
     protected static final String TOTAL_ITERATIONS = "Total iterations";
 
-    protected static final int TOTAL_THREADS = 25;
+    protected static final int TOTAL_THREADS = 24;
 
     protected static final String OUTPUT_FILE_NAME = "evaluationTracking.txt";
 
     protected static final String PROGRESS_INDICATOR = "progress indicator";
     
+    protected AbstractOptimizator()
+    {
+        this.evalFunction = new SphereFunction();
+        this.interval = new double[]{0,1};
+        this.iterations = 1000;
+        this.representationalBits = 8;
+        this.dimension = 3;
+        initOptimizator();
+    }
 
-    protected AbstractOptimizator(EvalFunction evalFunction, double[] interval, long iterations, int representationalBits, int dimension) {
+    protected AbstractOptimizator(EvalFunction evalFunction, double[] interval, long iterations, int representationalBits, int dimension, Map<String,Object> globalParams, int hilo) {
         this.evalFunction = evalFunction;
         this.interval = interval;
         this.iterations = iterations;
         this.representationalBits = representationalBits;
         this.dimension = dimension;
+        this.globalParams = globalParams;
+        this.hilo = hilo;
+        resetGlobalParams();
+        initOptimizator();
+    }
+
+    
+    public void setRandomDistribution(RandomDistribution randomDistribution) {
+        this.randomDistribution = randomDistribution;
     }
 
     @Override
@@ -54,6 +84,107 @@ public abstract class AbstractOptimizator implements Optimizator, Runnable
         optimize();
         ((boolean[])(globalParams.get(FINALIZED_THREADS)))[hilo-1] = true;
     }
+
+    @Override
+    public void optimize() {
+        
+        for(int k = 0; k < iterations; k++)
+        {
+            BinaryRepresentation[] newElements = getNewStates();
+            for(BinaryRepresentation element : newElements)
+            {    
+                if(isMoreOptimunState(element))
+                {
+                    globalBinaryRepresentationState = element;
+                    if(logTrack)
+                    {
+                        FileManager fileManager = new FileManager();
+                        String fileName = OUTPUT_FILE_NAME;
+                        long fileIndex = fileManager.openFile(fileName,true);
+                        fileManager.writeFile(fileIndex,"Function: "+ evalFunction.getFunctionName() + ", Thread: "+ hilo + ",Iteration: " + k + ",Vector: " + globalBinaryRepresentationState.printRealValue()  + ",Value: " + bestValue + "\n",true);
+                    }
+                    
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean isMoreOptimunState(BinaryRepresentation state) {
+        
+        double valuation = evalFunction.evalSoution(state.getRealValue());
+        boolean isMoreOptimun = false;
+        if(optimizeDirection)
+        {
+            
+            if(valuation > (double)globalParams.get(MAXIMUN_VALUE))
+            {
+                globalParams.replace(MAXIMUN_VALUE, valuation);
+                bestValue = valuation;
+                isMoreOptimun = true;
+                
+                maximumValue = valuation;
+
+            }
+            else if(valuation < (double)globalParams.get(MINIMUN_VALUE))
+            {
+                globalParams.replace(MINIMUN_VALUE, valuation);
+                minimumValue = valuation;
+            }
+        }
+        else
+        {
+            if(valuation > (double)globalParams.get(MAXIMUN_VALUE))
+            {
+                globalParams.replace(MAXIMUN_VALUE, valuation);
+                maximumValue = valuation;
+
+            }
+            else if(valuation < (double)globalParams.get(MINIMUN_VALUE))
+            {
+                globalParams.replace(MINIMUN_VALUE, valuation);
+                bestValue = valuation;
+                isMoreOptimun = true;
+                minimumValue = valuation;
+            }
+        }
+        return isMoreOptimun;
+    }
+
+    @Override
+    public long startMultiThreadOptimization(boolean appendFile, boolean logTrack)
+    {
+        FileManager fileManager = new FileManager();
+        long fileIndex = fileManager.openFile(OUTPUT_FILE_NAME,appendFile);
+        fileManager.writeFile(fileIndex,(appendFile ? "\n" : "") + "Tracking for " + evalFunction.getFunctionName() + "\n",appendFile);
+
+        globalParams.replace(MAXIMUN_VALUE, bestValue);
+        globalParams.replace(MINIMUN_VALUE, bestValue);
+        globalParams.replace(MEAN_VALUE, bestValue);
+        long initTime = new Date().getTime();
+
+        for(int k = 1; k < TOTAL_THREADS + 1; k++)
+        {
+            new Thread(createOptimizator(k,logTrack)).start();
+        }
+
+        boolean allThreads = false;
+        while(!allThreads)
+        {
+            boolean currentAll = true;
+            for(boolean threadFinished : (boolean[])globalParams.get(FINALIZED_THREADS))
+            
+                currentAll = currentAll && threadFinished;
+
+            allThreads = currentAll;
+        }
+        long finalTime = new Date().getTime();
+
+        return finalTime - initTime;
+
+    }
+
+    public abstract AbstractOptimizator createOptimizator(int hilo, boolean logTrack);
 
     public void resetGlobalParams()
     {
@@ -94,5 +225,20 @@ public abstract class AbstractOptimizator implements Optimizator, Runnable
 
     }
 
+    public void optimizeToMax()
+    {
+        this.optimizeDirection = true;
+    }
+
+    public void optimizeToMin()
+    {
+        this.optimizeDirection = false;
+    }
+
+    public void setLogTrack(boolean logTrack) {
+        this.logTrack = logTrack;
+    }
+
+    
 
 }

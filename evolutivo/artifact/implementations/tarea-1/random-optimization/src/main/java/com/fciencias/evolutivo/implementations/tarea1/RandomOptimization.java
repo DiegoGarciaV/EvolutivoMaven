@@ -209,7 +209,7 @@ public class RandomOptimization implements Runnable
         fileManager.writeFile(fileIndex,(appendFile ? "\n" : "") + "Tracking for " + evalFunction.getFunctionName() + "\n",appendFile);
 
         RandomOptimization optimumRandomOptimization = new RandomOptimization(evalFunction, interval, iterations, representationalBits,dimension);
-        BinaryMappingState optimuBinaryMappingState = optimumRandomOptimization.getRandomState(interval, dimension, representationalBits,0,new NormalRandomDistribution());
+        BinaryMappingState optimuBinaryMappingState = optimumRandomOptimization.getRandomState(interval, dimension, representationalBits,0,new NormalRandomDistribution(new double[]{0,1}));
         optimumRandomOptimization.setGlobalBinaryMappingState(optimuBinaryMappingState);
 
         

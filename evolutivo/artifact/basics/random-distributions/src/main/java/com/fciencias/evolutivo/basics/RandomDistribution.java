@@ -7,5 +7,5 @@ package com.fciencias.evolutivo.basics;
 public interface RandomDistribution 
 {
     public double getRandomValue();
-    
+    public double[] getValuesTable();
 }

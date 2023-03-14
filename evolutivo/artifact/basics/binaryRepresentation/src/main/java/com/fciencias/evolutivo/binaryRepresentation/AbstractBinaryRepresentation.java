@@ -16,7 +16,7 @@ public abstract class AbstractBinaryRepresentation implements BinaryRepresentati
 
     protected AbstractBinaryRepresentation(){
         representationalBits = 8;
-        this.randomDistribution = new NormalRandomDistribution();
+        this.randomDistribution = new NormalRandomDistribution(new double[]{0,1});
     }
 
     protected AbstractBinaryRepresentation(RandomDistribution randomDistribution){
@@ -27,7 +27,7 @@ public abstract class AbstractBinaryRepresentation implements BinaryRepresentati
     protected AbstractBinaryRepresentation(String binaryString)
     {
         this.binaryString = binaryString;
-        randomDistribution = new NormalRandomDistribution();
+        randomDistribution = new NormalRandomDistribution(new double[]{0,1});
 
     }
 

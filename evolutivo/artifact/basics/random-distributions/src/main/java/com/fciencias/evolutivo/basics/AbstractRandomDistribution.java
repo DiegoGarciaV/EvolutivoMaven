@@ -1,22 +1,48 @@
 package com.fciencias.evolutivo.basics;
 
+import com.fciencias.evolutivo.libraries.FileManager;
+
 public abstract class AbstractRandomDistribution implements RandomDistribution {
     
     protected double[] interval;
     protected int steps;
     protected int tableRows;
-    protected double mu;
-    protected double s;
     protected double[] valuesTable;
+    protected double[] params;
 
-    protected AbstractRandomDistribution()
+    public void setParams(double[] params)
     {
-        mu = 0;
-        s = 1;
+        this.params = params;
+    }
+
+    protected AbstractRandomDistribution(double[] params)
+    {
         tableRows = 10000;
         steps = 5*tableRows;
         valuesTable = new double[tableRows];
-        interval = new double[]{-3*s,3*s};
+        interval = new double[]{params[0] - 3*params[1],params[0] + 3*params[1]};
+        this.params = params;
+        fillTable();
+    }
+
+    protected AbstractRandomDistribution(double[] params, int tableRows)
+    {
+        this.tableRows = tableRows;
+        this.steps = 5*tableRows;
+        this.valuesTable = new double[tableRows];
+        this.interval = new double[]{params[0] - 3*params[1],params[0] + 3*params[1]};
+        this.params = params;
+        fillTable();
+    }
+
+
+    protected AbstractRandomDistribution(double[] params, int tableRows, double[] interval)
+    {
+        this.tableRows = tableRows;
+        this.steps = 5*tableRows;
+        this.valuesTable = new double[tableRows];
+        this.interval = interval;
+        this.params = params;
         fillTable();
     }
 
@@ -33,6 +59,16 @@ public abstract class AbstractRandomDistribution implements RandomDistribution {
         return valuesTable[row];
 
     }
+
+    public int getTablesRows()
+    {
+        return this.tableRows;
+    }
+
+    public double[] getValuesTable()
+    {
+        return this.valuesTable;
+    }
     
     protected void fillTable() {
         
@@ -41,7 +77,8 @@ public abstract class AbstractRandomDistribution implements RandomDistribution {
         int i = 0;
         
         double x = 0;
-        for(int j = 0; j < tableRows; j++)
+        valuesTable[0] = interval[0];
+        for(int j = 1; j < tableRows; j++)
         {
             while(acumulator < ((double)j)/((double)tableRows) && i < steps)
             {
@@ -56,4 +93,21 @@ public abstract class AbstractRandomDistribution implements RandomDistribution {
     protected abstract double densityFunction(double x);
 
     protected abstract double distributionFunction(double x);
+
+    public static void generateTestValues(RandomDistribution randomDistribution)
+    {
+        FileManager fileManager = new FileManager();
+        long fileIndex = fileManager.openFile("Inversa.txt", false);
+        long muestra = fileManager.openFile("generacionAleatoria.txt", false);
+
+        for(double row : randomDistribution.getValuesTable())
+        {
+            fileManager.writeLine(fileIndex,row + "");
+        }
+
+        for(int i = 0; i < 10000; i++)
+        {
+            fileManager.writeLine(muestra,randomDistribution.getRandomValue() + "");
+        }
+    }
 }

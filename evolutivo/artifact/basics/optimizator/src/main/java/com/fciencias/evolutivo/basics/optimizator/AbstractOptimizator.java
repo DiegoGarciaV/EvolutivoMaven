@@ -35,6 +35,8 @@ public abstract class AbstractOptimizator implements Optimizator, Runnable
 
     protected int hilo;
 
+    protected int totalThreads = 6;
+
     protected static final String FINALIZED_THREADS = "Finalized threads";
     
     protected static final String MINIMUN_VALUE = "Min value";
@@ -45,11 +47,11 @@ public abstract class AbstractOptimizator implements Optimizator, Runnable
 
     protected static final String TOTAL_ITERATIONS = "Total iterations";
 
-    protected static final int TOTAL_THREADS = 24;
-
     protected static final String OUTPUT_FILE_NAME = "evaluationTracking.txt";
 
     protected static final String PROGRESS_INDICATOR = "progress indicator";
+
+    protected static final String OPTIMUM_OBJECT = "optimum";
     
     protected AbstractOptimizator()
     {
@@ -73,9 +75,28 @@ public abstract class AbstractOptimizator implements Optimizator, Runnable
         initOptimizator();
     }
 
+    protected AbstractOptimizator(EvalFunction evalFunction, double[] interval, long iterations, int representationalBits, int dimension, Map<String,Object> globalParams, BinaryRepresentation globalBinaryRepresentationState, int hilo) {
+        this.evalFunction = evalFunction;
+        this.interval = interval;
+        this.iterations = iterations;
+        this.representationalBits = representationalBits;
+        this.dimension = dimension;
+        this.globalParams = globalParams;
+        this.globalBinaryRepresentationState = globalBinaryRepresentationState;
+        this.hilo = hilo;
+        resetGlobalParams();
+        bestValue = evalFunction.evalSoution(globalBinaryRepresentationState.getRealValue());
+        
+    }
+
     
     public void setRandomDistribution(RandomDistribution randomDistribution) {
         this.randomDistribution = randomDistribution;
+    }
+
+    public void setGlobalBinaryRepresentationState(BinaryRepresentation globalBinaryRepresentationState)
+    {
+        this.globalBinaryRepresentationState = globalBinaryRepresentationState;
     }
 
     @Override
@@ -96,6 +117,7 @@ public abstract class AbstractOptimizator implements Optimizator, Runnable
                 if(isMoreOptimunState(element))
                 {
                     globalBinaryRepresentationState = element;
+                    globalParams.replace(OPTIMUM_OBJECT, element);
                     if(logTrack)
                     {
                         FileManager fileManager = new FileManager();
@@ -163,7 +185,7 @@ public abstract class AbstractOptimizator implements Optimizator, Runnable
         globalParams.replace(MEAN_VALUE, bestValue);
         long initTime = new Date().getTime();
 
-        for(int k = 1; k < TOTAL_THREADS + 1; k++)
+        for(int k = 1; k < totalThreads + 1; k++)
         {
             new Thread(createOptimizator(k,logTrack)).start();
         }
@@ -179,7 +201,6 @@ public abstract class AbstractOptimizator implements Optimizator, Runnable
             allThreads = currentAll;
         }
         long finalTime = new Date().getTime();
-
         return finalTime - initTime;
 
     }
@@ -219,9 +240,14 @@ public abstract class AbstractOptimizator implements Optimizator, Runnable
 
 
         if(!globalParams.containsKey(FINALIZED_THREADS))
-            globalParams.put(FINALIZED_THREADS,new boolean[TOTAL_THREADS]);
+            globalParams.put(FINALIZED_THREADS,new boolean[totalThreads]);
         else
-            globalParams.replace(FINALIZED_THREADS, new boolean[TOTAL_THREADS]);
+            globalParams.replace(FINALIZED_THREADS, new boolean[totalThreads]);
+
+        if(!globalParams.containsKey(OPTIMUM_OBJECT))
+            globalParams.put(OPTIMUM_OBJECT,null);
+        else
+            globalParams.replace(OPTIMUM_OBJECT, null);
 
     }
 

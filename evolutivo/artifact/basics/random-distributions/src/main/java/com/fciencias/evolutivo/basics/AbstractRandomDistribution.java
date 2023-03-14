@@ -90,10 +90,6 @@ public abstract class AbstractRandomDistribution implements RandomDistribution {
         } 
     }
 
-    protected abstract double densityFunction(double x);
-
-    protected abstract double distributionFunction(double x);
-
     public static void generateTestValues(RandomDistribution randomDistribution)
     {
         FileManager fileManager = new FileManager();

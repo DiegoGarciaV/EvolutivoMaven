@@ -14,12 +14,17 @@ import com.fciencias.evolutivo.libraries.ParamsValidator;
  */
 public class KnapsackSearch extends AbstractOptimizator
 {
-    private double maxCost;
-    private EvalFunction gainCalculator;
+    protected double maxCost;
+    protected EvalFunction gainCalculator;
 
     public KnapsackSearch(EvalFunction evalFunction,long iterations,int representationalBits, int dimension, Map<String,Object> globalParams, int hilo)
     {
         super(evalFunction, new double[]{0,1}, iterations, representationalBits, dimension, globalParams,hilo);
+    }
+
+    public KnapsackSearch(EvalFunction evalFunction,long iterations,int representationalBits, int dimension, Map<String,Object> globalParams, BinaryRepresentation globalBinaryRepresentationState, int hilo)
+    {
+        super(evalFunction, new double[]{0,1}, iterations, representationalBits, dimension, globalParams,globalBinaryRepresentationState,hilo);
     }
 
     public void setMaxCost(double maxCost)
@@ -34,7 +39,8 @@ public class KnapsackSearch extends AbstractOptimizator
     @Override
     public void initOptimizator() {
         
-        globalBinaryRepresentationState = new BinaryDiscreteState(representationalBits);
+        BinaryDiscreteState binaryDiscreteState = new BinaryDiscreteState(representationalBits);
+        globalBinaryRepresentationState = binaryDiscreteState.getRandomState(representationalBits/2, binaryDiscreteState.getRealValue());
         bestValue = evalFunction.evalSoution(globalBinaryRepresentationState.getRealValue());
     }
 
@@ -83,6 +89,7 @@ public class KnapsackSearch extends AbstractOptimizator
         knapsackSearch.setLogTrack(logTrack);
         knapsackSearch.setMaxCost(maxCost);
         knapsackSearch.setGainCalculator(gainCalculator);
+        knapsackSearch.setGlobalBinaryRepresentationState(globalBinaryRepresentationState);
         return knapsackSearch;
     }
 

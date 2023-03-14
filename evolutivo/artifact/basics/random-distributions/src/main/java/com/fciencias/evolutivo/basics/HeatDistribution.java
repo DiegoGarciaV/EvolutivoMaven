@@ -8,13 +8,13 @@ public class HeatDistribution extends AbstractRandomDistribution{
     }
 
     @Override
-    protected double densityFunction(double x) {
+    public double densityFunction(double x) {
         
         return Math.exp(-x/params[0])/params[0];
     }
 
     @Override
-    protected double distributionFunction(double x) {
+    public double distributionFunction(double x) {
 
         return 1 - Math.exp(-x/params[0]);
     }

@@ -12,7 +12,7 @@ public class ParamsValidator
     
     static int dimension = 3;
     static int representationalBits = 64;
-    static long iterations = 10000;
+    static long iterations = 100;
 
     
 

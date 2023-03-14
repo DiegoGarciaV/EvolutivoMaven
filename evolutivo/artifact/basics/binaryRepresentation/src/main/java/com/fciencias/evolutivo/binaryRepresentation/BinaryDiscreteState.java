@@ -3,6 +3,7 @@ package com.fciencias.evolutivo.binaryRepresentation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class BinaryDiscreteState extends AbstractBinaryRepresentation{
 
@@ -96,8 +97,30 @@ public class BinaryDiscreteState extends AbstractBinaryRepresentation{
 
     @Override
     public BinaryRepresentation getRandomState(double radius, double[] mu) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRandomState'");
+        
+        boolean[] newBinaryArray = new boolean[representationalBits];
+        for(int i = 0; i < representationalBits; i++)
+            newBinaryArray[i] = mu[i]==1;
+
+
+        int randomBits = Math.min((int)(Math.round(radius)) ,representationalBits);
+        List<Integer> changedBits = new ArrayList<>();
+
+        int bitsCounter = 0;
+        while(bitsCounter < randomBits)
+        {
+            final int bit = (int)(Math.random()*representationalBits);
+
+            if(!changedBits.contains(bit))
+            {
+                newBinaryArray[bit] = !newBinaryArray[bit];
+                changedBits.add(bit);
+                bitsCounter++;
+            }
+        }
+        
+        String newBinaryString = arrayToString(newBinaryArray);
+        return new BinaryDiscreteState(newBinaryString);
     }
     
 }
